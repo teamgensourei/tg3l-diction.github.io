@@ -1,0 +1,13 @@
+# X (Twitter) Developer Portal で取得
+# https://developer.twitter.com/en/portal/dashboard
+X_CLIENT_ID=your_client_id_here
+X_CLIENT_SECRET=your_client_secret_here
+
+# コールバックURL (Developer Portalに登録したものと一致させること)
+REDIRECT_URI=http://localhost:3000/auth/callback
+
+# セッション暗号化キー (任意の長いランダム文字列)
+SESSION_SECRET=change_this_to_a_long_random_string_in_production
+
+# サーバーポート
+PORT=3000

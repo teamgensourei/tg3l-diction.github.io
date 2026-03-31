@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project UNKNOWN — ARG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d0f;--bg2:#131316;--bg3:#1a1a1e;--bg4:#222228;
+  --border:#2a2a32;--border2:#363640;
+  --text:#e8e8f0;--text2:#8888a0;--text3:#555568;
+  --purple:#7f77dd;--purple-dim:#534ab7;--purple-bg:#1e1a3a;--purple-glow:#7f77dd33;
+  --red:#e24b4a;--teal:#1d9e75;--teal-bg:#0a1f18;
+  --font-sans:'Noto Sans JP',sans-serif;--font-mono:'IBM Plex Mono',monospace;
+  --radius:8px;--radius-lg:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--font-sans);background:var(--bg);color:var(--text)}
+body{display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+body::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 40%,var(--purple-glow),transparent);
+  pointer-events:none;
+}
+.scanlines{
+  position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
+}
+.wrap{position:relative;z-index:1;width:100%;max-width:400px;padding:48px 28px;display:flex;flex-direction:column;align-items:center;gap:28px}
+.sys-tag{font-family:var(--font-mono);font-size:11px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;animation:flicker 6s infinite}
+@keyframes flicker{0%,96%,100%{opacity:1}97%{opacity:.3}98%{opacity:1}99%{opacity:.5}}
+.logo{
+  width:64px;height:64px;border-radius:16px;
+  border:1px solid var(--purple-dim);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:18px;font-weight:500;color:var(--purple);
+  animation:pulse-logo 4s infinite;
+}
+@keyframes pulse-logo{
+  0%,100%{box-shadow:0 0 20px var(--purple-glow),inset 0 0 20px var(--purple-glow)}
+  50%{box-shadow:0 0 40px #7f77dd55,inset 0 0 40px #7f77dd22}
+}
+h1{font-family:var(--font-mono);font-size:20px;letter-spacing:2px;text-align:center}
+.sub{font-size:13px;color:var(--text2);text-align:center;line-height:1.8}
+.error-bar{
+  width:100%;padding:10px 14px;border-radius:var(--radius);
+  background:#1f0d0d;border:1px solid var(--red);
+  color:var(--red);font-size:12px;font-family:var(--font-mono);display:none;
+}
+.error-bar.show{display:block}
+.oauth-btn{
+  width:100%;padding:13px 20px;border-radius:var(--radius-lg);
+  border:1px solid var(--border2);display:flex;align-items:center;gap:12px;cursor:pointer;
+  background:var(--bg3);color:var(--text);font-size:14px;font-weight:500;
+  font-family:var(--font-sans);transition:all .2s;text-decoration:none;
+}
+.oauth-btn:hover{background:var(--bg4);border-color:var(--purple-dim)}
+.xi{width:22px;height:22px;border-radius:4px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.divider{width:100%;display:flex;align-items:center;gap:12px;color:var(--text3);font-size:12px;font-family:var(--font-mono)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.search-box{width:100%;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:border-color .2s}
+.search-box:focus-within{border-color:var(--purple-dim)}
+.search-inp{width:100%;padding:12px 14px;border:none;background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-mono);outline:none}
+.search-inp::placeholder{color:var(--text3)}
+.results{display:none;border-top:1px solid var(--border)}
+.s-item{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;background:var(--bg3);border-bottom:1px solid var(--border);transition:background .1s}
+.s-item:last-child{border-bottom:none}
+.s-item:hover{background:var(--bg4)}
+.s-item.locked{background:var(--purple-bg)}
+.s-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;font-family:var(--font-mono);flex-shrink:0}
+.ic-p{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-dim)}
+.ic-t{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal)}
+.ic-g{background:var(--bg4);color:var(--text2);border:1px solid var(--border2)}
+.ic-r{background:#1f0d0d;color:var(--red);border:1px solid var(--red)}
+.ic-a{background:#1f1708;color:#ef9f27;border:1px solid #ef9f27}
+.s-name{font-size:13px;font-weight:500;color:var(--text);font-family:var(--font-mono)}
+.s-desc{font-size:11px;color:var(--text2);margin-top:2px}
+.badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;font-family:var(--font-mono)}
+.b-open{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal)}
+.b-hidden{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-dim)}
+.b-locked{background:#1f0d0d;color:var(--red);border:1px solid var(--red)}
+.no-r{padding:12px 14px;font-size:12px;color:var(--text3);font-family:var(--font-mono)}
+.footer{font-size:11px;color:var(--text3);text-align:center;line-height:1.8;font-family:var(--font-mono)}
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);
+  background:var(--bg4);color:var(--text);padding:10px 18px;
+  border-radius:var(--radius-lg);font-size:12px;opacity:0;transition:all .3s;
+  border:1px solid var(--border2);font-family:var(--font-mono);z-index:99;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+<div class="wrap">
+  <div class="sys-tag">SYSTEM ONLINE // ARG_v2.1</div>
+  <div class="logo">ARG</div>
+  <div>
+    <h1>PROJECT UNKNOWN</h1>
+    <p class="sub" style="margin-top:8px">謎が待っている。<br>ログインして、真実を探せ。</p>
+  </div>
+
+  <div class="error-bar" id="err-bar"></div>
+
+  <a class="oauth-btn" href="/auth/login">
+    <div class="xi">X</div>
+    X (Twitter) でログイン
+  </a>
+
+  <div class="divider">または</div>
+
+  <div class="search-box">
+    <input class="search-inp" id="search-inp"
+      placeholder="サーバーを検索（隠しサーバーも？）"
+      oninput="doSearch(this.value)" autocomplete="off"/>
+    <div class="results" id="results"></div>
+  </div>
+
+  <p class="footer">
+    ARG参加者のみが隠しサーバーを発見できる<br>
+    ヒント：暗号の中に名前がある
+  </p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SERVERS=[
+  {name:"misskey.io",   desc:"メインサーバー・公開",          ic:"M",cls:"ic-t",badge:"open",  secret:false,kws:["misskey","io","メイン","公開"]},
+  {name:"unknown.io",   desc:"招待制・謎の存在が管理",         ic:"?",cls:"ic-p",badge:"hidden",secret:true, kws:["unknown","謎","招待","layer2","cipher","project"]},
+  {name:"shadow.layer", desc:"完全非公開・暗号解読者のみ",      ic:"S",cls:"ic-r",badge:"locked",secret:true, kws:["shadow","layer","暗号","decode","khoor","hello"]},
+  {name:"agent.space",  desc:"調査員向けサーバー",             ic:"A",cls:"ic-g",badge:"hidden",secret:true, kws:["agent","調査","space"]},
+  {name:"social.normal",desc:"一般公開サーバー",               ic:"N",cls:"ic-a",badge:"open",  secret:false,kws:["normal","social","一般","普通"]},
+];
+function doSearch(q){
+  const el=document.getElementById('results');
+  if(!q){el.style.display='none';return}
+  const ql=q.toLowerCase();
+  const hits=SERVERS.filter(s=>s.kws.some(k=>k.includes(ql))||s.name.includes(ql));
+  if(!hits.length){el.style.display='block';el.innerHTML='<div class="no-r">見つかりません — 別のキーワードを試して</div>';return}
+  el.style.display='block';
+  el.innerHTML=hits.map(s=>`
+    <div class="s-item ${s.secret?'locked':''}" onclick="pick('${s.name}',${s.secret})">
+      <div class="s-icon ${s.cls}">${s.ic}</div>
+      <div style="flex:1">
+        <div class="s-name">${s.name}${s.secret?' 🔒':''}</div>
+        <div class="s-desc">${s.desc}</div>
+      </div>
+      <span class="badge b-${s.badge}">${s.badge==='open'?'公開':s.badge==='hidden'?'隠し':'鍵付き'}</span>
+    </div>`).join('');
+}
+function pick(name,secret){
+  if(secret){showToast('隠しサーバーを発見: '+name+' — Xでログインして参加')}
+  else{location.href='/auth/login'}
+}
+let tt;
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600);
+}
+// エラー表示
+const p=new URLSearchParams(location.search);
+if(p.get('error')){
+  const msgs={no_client_id:'X_CLIENT_IDが未設定です (.envを確認)',state_mismatch:'セキュリティエラー: もう一度お試しください',token_failed:'X認証に失敗しました。API設定を確認してください'};
+  const bar=document.getElementById('err-bar');
+  bar.textContent=msgs[p.get('error')]||'エラー: '+p.get('error');
+  bar.classList.add('show');
+}
+</script>
+</body>
+</html>
