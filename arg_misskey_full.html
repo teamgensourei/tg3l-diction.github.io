@@ -1,0 +1,493 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans)}
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column}
+
+/* ===== LANDING ===== */
+#screen-landing{min-height:600px;align-items:center;justify-content:center;background:var(--color-background-primary)}
+.landing-inner{width:100%;max-width:400px;padding:40px 24px;display:flex;flex-direction:column;align-items:center;gap:24px}
+.logo-mark{width:56px;height:56px;border-radius:16px;background:#534AB7;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:500}
+.landing-title{font-size:22px;font-weight:500;color:var(--color-text-primary);text-align:center}
+.landing-sub{font-size:14px;color:var(--color-text-secondary);text-align:center;line-height:1.6}
+.oauth-btn{width:100%;padding:12px 20px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);display:flex;align-items:center;gap:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-size:14px;font-weight:500;transition:background 0.15s}
+.oauth-btn:hover{background:var(--color-background-secondary)}
+.oauth-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.xi{background:#000;color:#fff}
+.divider{width:100%;display:flex;align-items:center;gap:12px;color:var(--color-text-secondary);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:0.5px;background:var(--color-border-tertiary)}
+.server-search-box{width:100%;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);overflow:hidden}
+.server-search-input{width:100%;padding:11px 14px;border:none;background:var(--color-background-secondary);color:var(--color-text-primary);font-size:14px;outline:none}
+.server-result{display:none;border-top:0.5px solid var(--color-border-tertiary)}
+.server-item{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;background:var(--color-background-primary);transition:background 0.1s}
+.server-item:hover{background:var(--color-background-secondary)}
+.server-item.locked{background:#EEEDFE11}
+.server-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;flex-shrink:0}
+.server-info{flex:1}
+.server-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.server-desc{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.server-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
+.badge-open{background:#EAF3DE;color:#3B6D11}
+.badge-hidden{background:#EEEDFE;color:#534AB7}
+.badge-locked{background:#FAECE7;color:#993C1D}
+.no-result{padding:12px 14px;font-size:13px;color:var(--color-text-secondary)}
+.landing-footer{font-size:12px;color:var(--color-text-secondary);text-align:center;line-height:1.6}
+
+/* ===== HOME ===== */
+#screen-home{min-height:600px;flex-direction:row;background:var(--color-background-primary)}
+.sidebar{width:220px;flex-shrink:0;border-right:0.5px solid var(--color-border-tertiary);padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.sidebar-logo{display:flex;align-items:center;gap:8px;padding:8px;margin-bottom:8px}
+.sidebar-logo .logo-mark{width:32px;height:32px;border-radius:8px;font-size:14px}
+.sidebar-logo span{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--border-radius-md);cursor:pointer;color:var(--color-text-secondary);font-size:13px;transition:background 0.1s}
+.nav-item:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.nav-item.active{background:#EEEDFE;color:#534AB7;font-weight:500}
+.nav-icon{width:18px;text-align:center;font-size:15px;flex-shrink:0}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:#E24B4A;margin-left:auto}
+.note-btn{margin-top:auto;padding:11px;background:#534AB7;color:#fff;border:none;border-radius:var(--border-radius-lg);cursor:pointer;font-size:13px;font-weight:500}
+.note-btn:hover{background:#3C3489}
+.user-row{display:flex;align-items:center;gap:8px;padding:10px 8px 0;margin-top:8px;border-top:0.5px solid var(--color-border-tertiary)}
+.user-av{width:30px;height:30px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-size:12px;color:#534AB7;font-weight:500;flex-shrink:0}
+.user-info .user-name{font-size:12px;font-weight:500;color:var(--color-text-primary)}
+.user-info .user-handle{font-size:11px;color:var(--color-text-secondary)}
+
+.main-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.col-header{padding:12px 16px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:10px;background:var(--color-background-primary)}
+.col-header h2{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.tab-switcher{display:flex;gap:0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tl-tab{flex:1;padding:10px 4px;font-size:12px;text-align:center;cursor:pointer;color:var(--color-text-secondary);border:none;background:none;border-bottom:2px solid transparent}
+.tl-tab.active{color:#534AB7;border-bottom-color:#534AB7;font-weight:500}
+.tl-feed{overflow-y:auto;flex:1}
+.notice-bar{margin:10px 12px;padding:10px 12px;background:#E6F1FB;border-radius:var(--border-radius-md);font-size:12px;color:#0C447C;display:flex;align-items:center;gap:6px}
+
+.post-wrap{padding:14px 16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.post-top{display:flex;gap:10px}
+.p-av{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500}
+.p-av.av1{background:#EEEDFE;color:#534AB7}
+.p-av.av2{background:#E1F5EE;color:#0F6E56}
+.p-av.av3{background:#F1EFE8;color:#5F5E5A}
+.p-av.av4{background:#FCEBEB;color:#A32D2D}
+.p-av.av5{background:#FAEEDA;color:#854F0B}
+.post-main{flex:1;min-width:0}
+.post-head{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.p-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.p-handle{font-size:12px;color:var(--color-text-secondary)}
+.p-time{font-size:11px;color:var(--color-text-secondary);margin-left:auto}
+.p-body{font-size:13px;line-height:1.65;color:var(--color-text-primary);white-space:pre-wrap;word-break:break-word}
+.p-body.cipher-style{font-family:var(--font-mono);font-size:12px;letter-spacing:1.2px;color:#534AB7}
+.reaction-bar{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.react{font-size:12px;padding:3px 10px;border-radius:20px;border:0.5px solid var(--color-border-secondary);cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all 0.1s}
+.react:hover{border-color:#7F77DD;color:#534AB7;background:#EEEDFE}
+.react.active{background:#EEEDFE;border-color:#AFA9EC;color:#534AB7}
+.act-row{display:flex;gap:16px;margin-top:6px}
+.act{font-size:12px;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;gap:4px}
+.act:hover{color:var(--color-text-primary)}
+.reply-indent{margin-left:48px;border-left:2px solid var(--color-border-secondary);padding-left:12px;margin-top:8px}
+.reply-indent .post-wrap{padding:10px 0;border-bottom:none}
+
+.right-col{width:260px;flex-shrink:0;border-left:0.5px solid var(--color-border-tertiary);padding:14px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.widget-card{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:12px}
+.widget-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:10px}
+.server-search-mini{width:100%;padding:8px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-size:12px;outline:none}
+.mini-results{margin-top:6px;display:none}
+.mini-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);margin-bottom:4px;border:0.5px solid var(--color-border-tertiary)}
+.mini-item:hover{background:#EEEDFE}
+.trend-item{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);cursor:pointer}
+.trend-item:last-child{border-bottom:none}
+.trend-tag{font-size:12px;color:#534AB7;font-weight:500}
+.trend-count{font-size:11px;color:var(--color-text-secondary)}
+.notif-mini{display:flex;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.notif-mini:last-child{border-bottom:none}
+.notif-mini-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.notif-mini-body{font-size:12px;color:var(--color-text-primary);line-height:1.4}
+.notif-mini-body span{color:var(--color-text-secondary)}
+.dot-new{display:inline-block;width:6px;height:6px;border-radius:50%;background:#E24B4A;margin-left:4px;vertical-align:middle}
+
+/* compose modal area */
+.compose-overlay{display:none;background:rgba(0,0,0,0.35);padding:20px;border-radius:var(--border-radius-lg);margin:12px 16px}
+.compose-overlay.show{display:block}
+.compose-inner{background:var(--color-background-primary);border-radius:var(--border-radius-lg);padding:16px;border:0.5px solid var(--color-border-secondary)}
+.compose-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.compose-ta{width:100%;border:none;background:transparent;font-size:14px;color:var(--color-text-primary);resize:none;outline:none;min-height:80px;font-family:var(--font-sans);line-height:1.6}
+.compose-footer{display:flex;align-items:center;justify-content:space-between;border-top:0.5px solid var(--color-border-tertiary);padding-top:10px;margin-top:6px}
+.compose-cw{font-size:12px;color:var(--color-text-secondary);padding:4px 8px;border-radius:4px;cursor:pointer}
+.compose-submit{padding:8px 18px;background:#534AB7;color:#fff;border:none;border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;font-weight:500}
+.compose-submit:hover{background:#3C3489}
+.cw-input{width:100%;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:7px 10px;font-size:13px;background:var(--color-background-secondary);color:var(--color-text-primary);margin-bottom:8px;display:none}
+.cw-input.show{display:block}
+
+/* toast */
+.toast{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#534AB7;color:#fff;padding:10px 18px;border-radius:var(--border-radius-lg);font-size:13px;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:99}
+.toast.show{opacity:1}
+
+/* admin tab */
+.admin-bar{border-top:0.5px solid var(--color-border-tertiary);padding:12px 16px;background:var(--color-background-secondary)}
+.admin-label{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px}
+.trigger-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.trigger-input{flex:1;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.trigger-resp{flex:2;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.sm-btn{padding:7px 12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.sm-btn.primary{background:#534AB7;color:#fff;border-color:#534AB7}
+.trigger-list{font-size:12px;color:var(--color-text-secondary);margin-top:4px}
+.trigger-chip{display:inline-flex;align-items:center;gap:4px;background:#EEEDFE;color:#534AB7;padding:3px 10px;border-radius:20px;margin:2px;font-size:11px}
+.trigger-chip .del{cursor:pointer;color:#AFA9EC}
+.trigger-chip .del:hover{color:#E24B4A}
+</style>
+
+<div style="position:relative;min-height:600px">
+
+<!-- LANDING -->
+<div id="screen-landing" class="screen active">
+  <div class="landing-inner">
+    <div class="logo-mark">ARG</div>
+    <div>
+      <div class="landing-title">Project UNKNOWN</div>
+      <div class="landing-sub" style="margin-top:6px">謎が待っている。<br>ログインして、真実を探せ。</div>
+    </div>
+    <button class="oauth-btn" onclick="doLogin()">
+      <div class="oauth-icon xi">X</div>
+      X (Twitter) でログイン
+    </button>
+    <div class="divider">または</div>
+    <div class="server-search-box">
+      <input class="server-search-input" id="landing-search" placeholder="サーバーを検索（隠しサーバーも？）" oninput="searchServers(this.value)" autocomplete="off"/>
+      <div class="server-result" id="server-results"></div>
+    </div>
+    <div class="landing-footer">ARG参加者のみが隠しサーバーを発見できる<br>ヒント: 暗号の中に名前がある</div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="screen-home" class="screen">
+  <!-- sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">ARG</div>
+      <span>Project UNKNOWN</span>
+    </div>
+    <div class="nav-item active"><span class="nav-icon">&#9776;</span>タイムライン</div>
+    <div class="nav-item" onclick="showNotifPanel()"><span class="nav-icon">&#9825;</span>通知<div class="nav-dot"></div></div>
+    <div class="nav-item"><span class="nav-icon">&#9670;</span>クリップ</div>
+    <div class="nav-item"><span class="nav-icon">&#9729;</span>ドライブ</div>
+    <div class="nav-item" onclick="showAdmin()"><span class="nav-icon">&#9881;</span>管理者パネル</div>
+    <div class="nav-item"><span class="nav-icon">&#35;</span>みつける</div>
+    <div class="nav-item"><span class="nav-icon">&#9679;</span>お知らせ</div>
+    <div class="nav-item"><span class="nav-icon">&#9632;</span>チャンネル</div>
+    <div class="nav-item"><span class="nav-icon">&#9675;</span>検索</div>
+    <button class="note-btn" onclick="toggleCompose()">ノート</button>
+    <div class="user-row">
+      <div class="user-av">あ</div>
+      <div class="user-info">
+        <div class="user-name">あなた</div>
+        <div class="user-handle">@you@unknown.io</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- main -->
+  <div class="main-col">
+    <div class="col-header">
+      <h2>タイムライン</h2>
+    </div>
+    <div class="tab-switcher">
+      <button class="tl-tab active">ホーム</button>
+      <button class="tl-tab">ローカル</button>
+      <button class="tl-tab">ソーシャル</button>
+      <button class="tl-tab">グローバル</button>
+    </div>
+
+    <!-- compose -->
+    <div class="compose-overlay" id="compose-area">
+      <div class="compose-inner">
+        <div class="compose-head">
+          <div class="user-av">あ</div>
+          <span style="font-size:13px;color:var(--color-text-secondary)">今、何してる？</span>
+        </div>
+        <input class="cw-input" id="cw-field" placeholder="コンテンツの警告..." />
+        <textarea class="compose-ta" id="compose-text" placeholder="謎について投稿する..."></textarea>
+        <div class="compose-footer">
+          <span class="compose-cw" onclick="toggleCW()">CW</span>
+          <span style="font-size:12px;color:var(--color-text-secondary)" id="char-count">500</span>
+          <button class="compose-submit" onclick="submitPost()">ノートする</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice-bar" id="notice-bar">
+      &#9432; ホームタイムラインでは、フォローしているアカウントの投稿が表示されます。
+      <span style="margin-left:auto;cursor:pointer;color:#185FA5" onclick="document.getElementById('notice-bar').style.display='none'">&#10005;</span>
+    </div>
+
+    <div class="tl-feed" id="tl-feed"></div>
+    <div class="admin-bar" id="admin-bar" style="display:none">
+      <div class="admin-label">Botトリガー設定</div>
+      <div class="trigger-row">
+        <input class="trigger-input" id="trig-word" placeholder="トリガーワード（例：暗号）"/>
+        <input class="trigger-resp" id="trig-reply" placeholder="Botの返信内容..."/>
+        <button class="sm-btn primary" onclick="addTrigger()">追加</button>
+      </div>
+      <div id="trigger-chips"></div>
+    </div>
+  </div>
+
+  <!-- right col -->
+  <div class="right-col">
+    <div class="widget-card">
+      <div class="widget-title">サーバー検索</div>
+      <input class="server-search-mini" id="mini-search" placeholder="サーバー名・キーワード..." oninput="miniSearch(this.value)" autocomplete="off"/>
+      <div class="mini-results" id="mini-results"></div>
+    </div>
+    <div class="widget-card" id="notif-widget">
+      <div class="widget-title">通知</div>
+      <div id="notif-list"></div>
+    </div>
+    <div class="widget-card">
+      <div class="widget-title">トレンド</div>
+      <div class="trend-item"><span class="trend-tag">#今月描いた絵を晒そう</span><span class="trend-count">8人</span></div>
+      <div class="trend-item"><span class="trend-tag">#ioが復旧したから何か貼ろう</span><span class="trend-count">11人</span></div>
+      <div class="trend-item"><span class="trend-tag">#にゃんぷっぷーの釣り堀</span><span class="trend-count">4人</span></div>
+      <div class="trend-item" onclick="sendPrompt('ARGの謎に関するハッシュタグを考えて')"><span class="trend-tag">#project_unknown</span><span class="trend-count">謎の投稿 ↗</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+const SERVERS=[
+  {name:"misskey.io",desc:"メインサーバー・公開",icon:"M",iconCls:"av2",badge:"open",secret:false,kws:["misskey","io","メイン","公開"]},
+  {name:"unknown.io",desc:"招待制・謎の存在が管理",icon:"?",iconCls:"av1",badge:"hidden",secret:true,kws:["unknown","謎","招待","layer2","cipher","project"]},
+  {name:"shadow.layer",desc:"完全非公開・暗号解読者のみ",icon:"S",iconCls:"av4",badge:"locked",secret:true,kws:["shadow","layer","暗号","decode","khoor","hello"]},
+  {name:"agent.space",desc:"調査員向けサーバー",icon:"A",iconCls:"av3",badge:"hidden",secret:true,kws:["agent","調査","space","investigator"]},
+  {name:"social.normal",desc:"一般公開サーバー",icon:"N",iconCls:"av5",badge:"open",secret:false,kws:["normal","social","一般","普通"]}
+];
+
+let posts=[
+  {id:1,name:"謎の存在",handle:"@unknown@unknown.io",avCls:"av1",avT:"?",time:"1分前",body:"KHOOR ZRUOG\n\n最初の鍵を見つけよ。",cipher:true,likes:7,rp:3,reacts:["🔍 調査","🔗 連鎖"],botTrigger:null,replies:[
+    {name:"ようこそBot",handle:"@notify",avCls:"av3",avT:"B",time:"1分前",body:'" ·· ···:··::· "',cipher:false}
+  ]},
+  {id:2,name:"調査員A",handle:"@agent_a@agent.space",avCls:"av2",avT:"A",time:"3分前",body:"北緯35.6762、東経139.6503\nこの場所に何かある。",cipher:false,likes:12,rp:5,reacts:["📍 確認","🔎 調査"],botTrigger:null,replies:[]},
+  {id:3,name:"システム",handle:"@sys@unknown.io",avCls:"av3",avT:"S",time:"10分前",body:"⚠ システム警告\n01001100 01000001 01011001 01000101 01010010 00110010",cipher:true,likes:9,rp:6,reacts:["💻 解析"],botTrigger:null,replies:[]},
+  {id:4,name:"緊急放送",handle:"@broadcast@unknown.io",avCls:"av4",avT:"!",time:"1ヶ月前",body:"【緊急】第二フェーズが開始されました。\n次のメッセージを待て。時間は限られている。",cipher:false,likes:23,rp:11,reacts:["⚡ 確認","🚨 警戒"],botTrigger:null,replies:[]}
+];
+
+let triggers=[
+  {word:"暗号",reply:"...お前も気づいたか。ROT3を試せ。",actor:{name:"謎の存在",handle:"@unknown",avCls:"av1",avT:"?"}},
+  {word:"layer2",reply:"正しい。次の扉はshadow.layerにある。",actor:{name:"システム",handle:"@sys",avCls:"av3",avT:"S"}}
+];
+
+let notifications=[
+  {avCls:"av1",avT:"?",body:"謎の存在があなたにリプライ",sub:"「正しい方向だ...」",dot:true},
+  {avCls:"av2",avT:"A",body:"調査員Aがフォロー",sub:"",dot:true},
+  {avCls:"av3",avT:"S",body:"実績を獲得: just setting up my msky",sub:"",dot:false}
+];
+
+let composing=false,cwVisible=false;
+
+function searchServers(q){
+  const el=document.getElementById('server-results');
+  if(!q){el.style.display='none';return;}
+  const ql=q.toLowerCase();
+  const hits=SERVERS.filter(s=>s.kws.some(k=>k.includes(ql))||s.name.toLowerCase().includes(ql)||s.desc.includes(ql));
+  if(!hits.length){
+    el.style.display='block';
+    el.innerHTML='<div class="no-result">見つかりません — 別のキーワードを試してみて</div>';
+    return;
+  }
+  el.style.display='block';
+  el.innerHTML=hits.map(s=>`
+    <div class="server-item ${s.secret?'locked':''}" onclick="selectServer('${s.name}','${s.secret}')">
+      <div class="server-icon ${s.iconCls}">${s.icon}</div>
+      <div class="server-info">
+        <div class="server-name">${s.name} ${s.secret?'🔒':''}</div>
+        <div class="server-desc">${s.desc}</div>
+      </div>
+      <span class="server-badge badge-${s.badge}">${s.badge==='open'?'公開':s.badge==='hidden'?'隠し':'鍵付き'}</span>
+    </div>`).join('');
+}
+
+function selectServer(name,secret){
+  if(secret==='true'){
+    showToast('隠しサーバーを発見: '+name+' — Xでログインして参加');
+  } else {
+    doLogin();
+  }
+}
+
+function miniSearch(q){
+  const el=document.getElementById('mini-results');
+  if(!q){el.style.display='none';return;}
+  const ql=q.toLowerCase();
+  const hits=SERVERS.filter(s=>s.kws.some(k=>k.includes(ql))||s.name.toLowerCase().includes(ql));
+  if(!hits.length){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML=hits.map(s=>`
+    <div class="mini-item">
+      <div class="server-icon ${s.iconCls}" style="width:26px;height:26px;font-size:12px">${s.icon}</div>
+      <div style="flex:1">
+        <div class="server-name" style="font-size:12px">${s.name}</div>
+        <div class="server-desc" style="font-size:11px">${s.desc}</div>
+      </div>
+      <span class="server-badge badge-${s.badge}" style="font-size:10px">${s.badge==='open'?'公開':s.badge==='hidden'?'隠し':'鍵付き'}</span>
+    </div>`).join('');
+}
+
+function doLogin(){
+  showToast('X OAuth でログイン中...');
+  setTimeout(()=>{
+    document.getElementById('screen-landing').classList.remove('active');
+    document.getElementById('screen-home').classList.add('active');
+    renderFeed();
+    renderNotifs();
+  },900);
+}
+
+function renderFeed(){
+  const feed=document.getElementById('tl-feed');
+  feed.innerHTML=posts.slice().reverse().map(p=>`
+    <div class="post-wrap" id="post-${p.id}">
+      <div class="post-top">
+        <div class="p-av ${p.avCls}">${p.avT}</div>
+        <div class="post-main">
+          <div class="post-head">
+            <span class="p-name">${p.name}</span>
+            <span class="p-handle">${p.handle}</span>
+            <span class="p-time">${p.time}</span>
+          </div>
+          <div class="p-body ${p.cipher?'cipher-style':''}">${p.body}</div>
+          <div class="reaction-bar">${p.reacts.map(r=>`<span class="react" onclick="reactPost(this)">${r}</span>`).join('')}</div>
+          <div class="act-row">
+            <span class="act" onclick="replyToPost(${p.id})">&#9001; ${p.replies.length}</span>
+            <span class="act">&#8635; ${p.rp}</span>
+            <span class="act" onclick="likeP(this,${p.id})">&#9825; ${p.likes}</span>
+            <span class="act">&#8943;</span>
+          </div>
+        </div>
+      </div>
+      ${p.replies.map(r=>`
+        <div class="reply-indent">
+          <div class="post-wrap">
+            <div class="post-top">
+              <div class="p-av ${r.avCls}" style="width:28px;height:28px;font-size:12px">${r.avT}</div>
+              <div class="post-main">
+                <div class="post-head"><span class="p-name">${r.name}</span><span class="p-handle">${r.handle}</span><span class="p-time">${r.time}</span></div>
+                <div class="p-body">${r.body}</div>
+              </div>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function renderNotifs(){
+  const el=document.getElementById('notif-list');
+  el.innerHTML=notifications.map(n=>`
+    <div class="notif-mini">
+      <div class="notif-mini-av ${n.avCls}">${n.avT}</div>
+      <div class="notif-mini-body">${n.body}${n.dot?'<span class="dot-new"></span>':''}<br><span>${n.sub}</span></div>
+    </div>`).join('');
+}
+
+function likeP(el,id){
+  const p=posts.find(x=>x.id===id);
+  if(p){p.likes++;el.innerHTML='&#9829; '+p.likes;}
+}
+function reactPost(el){el.classList.toggle('active');}
+
+function replyToPost(id){
+  const p=posts.find(x=>x.id===id);
+  document.getElementById('compose-area').classList.add('show');
+  document.getElementById('compose-text').value='@'+p.handle.split('@')[1]+' ';
+  document.getElementById('compose-text').focus();
+  composing=true;
+}
+
+function toggleCompose(){
+  composing=!composing;
+  document.getElementById('compose-area').classList.toggle('show',composing);
+  if(composing)document.getElementById('compose-text').focus();
+}
+function toggleCW(){
+  cwVisible=!cwVisible;
+  document.getElementById('cw-field').classList.toggle('show',cwVisible);
+}
+
+document.addEventListener('input',function(e){
+  if(e.target.id==='compose-text'){
+    const v=e.target.value;
+    document.getElementById('char-count').textContent=500-v.length;
+  }
+});
+
+function submitPost(){
+  const text=document.getElementById('compose-text').value.trim();
+  if(!text)return;
+  const now=new Date();
+  const timeStr='たった今';
+  const newPost={id:posts.length+1,name:"あなた",handle:"@you@unknown.io",avCls:"av5",avT:"あ",time:timeStr,body:text,cipher:false,likes:0,rp:0,reacts:["👍"],botTrigger:null,replies:[]};
+  posts.push(newPost);
+
+  const matched=triggers.filter(t=>text.includes(t.word));
+  matched.forEach(t=>{
+    setTimeout(()=>{
+      const p=posts.find(x=>x.id===newPost.id);
+      if(p){
+        p.replies.push({name:t.actor.name,handle:t.actor.handle,avCls:t.actor.avCls,avT:t.actor.avT,time:"たった今",body:t.reply,cipher:false});
+        renderFeed();
+        notifications.unshift({avCls:t.actor.avCls,avT:t.actor.avT,body:t.actor.name+'がリプライ',sub:`「${t.reply.slice(0,20)}...」`,dot:true});
+        renderNotifs();
+        showToast(t.actor.name+' からリプライが届いた');
+      }
+    },1200);
+  });
+
+  document.getElementById('compose-text').value='';
+  document.getElementById('compose-area').classList.remove('show');
+  composing=false;
+  renderFeed();
+  if(matched.length===0) showToast('投稿しました');
+}
+
+function showAdmin(){
+  const bar=document.getElementById('admin-bar');
+  bar.style.display=bar.style.display==='none'?'block':'none';
+  renderTriggerChips();
+}
+
+function addTrigger(){
+  const word=document.getElementById('trig-word').value.trim();
+  const reply=document.getElementById('trig-reply').value.trim();
+  if(!word||!reply)return;
+  triggers.push({word,reply,actor:{name:"謎の存在",handle:"@unknown",avCls:"av1",avT:"?"}});
+  document.getElementById('trig-word').value='';
+  document.getElementById('trig-reply').value='';
+  renderTriggerChips();
+  showToast('トリガーを追加: "'+word+'"');
+}
+
+function renderTriggerChips(){
+  document.getElementById('trigger-chips').innerHTML=triggers.map((t,i)=>
+    `<span class="trigger-chip">"${t.word}" → ${t.reply.slice(0,16)}... <span class="del" onclick="delTrigger(${i})">✕</span></span>`
+  ).join('');
+}
+
+function delTrigger(i){
+  triggers.splice(i,1);
+  renderTriggerChips();
+}
+
+function showNotifPanel(){
+  document.getElementById('notif-widget').scrollIntoView({behavior:'smooth'});
+  notifications.forEach(n=>n.dot=false);
+  renderNotifs();
+  document.querySelector('.nav-dot').style.display='none';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+</script>
